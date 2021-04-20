@@ -11,11 +11,12 @@ header = {
 	"file_format": 0,
 }
 
-def __init__(self, filename):
+def load(filename):
 	f = open(filename, "rb")
 	
 	# Load file header
-	header["name"] = f.read(4).decode("utf-8")
+	header["name"] = f.read(3).decode("utf-8")
+	f.seek(1, 1)
 	header["prg_banks"] = f.read(1)[0]
 	header["chr_banks"] = f.read(1)[0]
 	header["control1"] = f.read(1)[0]
@@ -27,7 +28,7 @@ def __init__(self, filename):
 	
 	# Skip trainer
 	if header["control1"] & 0x04:
-		f.seek(512)
+		f.seek(512, 1)
 	
 	# Determine file format
 	if (header["control1"] >> 2) & 0x02:

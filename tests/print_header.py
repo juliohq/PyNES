@@ -1,9 +1,9 @@
 import test
 from PyNES import cartridge
 
-cart = cartridge.Cartridge("tests/cpu_dummy_reads.nes")
+cartridge.load("tests/cpu_dummy_reads.nes")
 
-print(cart.header)
+print(cartridge.header)
 
-for prop in cart.header:
-	print(prop + ":", cart.header[prop])
+for prop in cartridge.header:
+	print(prop + ":", cartridge.header[prop])
