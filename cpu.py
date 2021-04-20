@@ -28,10 +28,6 @@ def fetch():
 	global fetched
 	fetched = read(pc)
 
-# 00 00 00 10
-# 00 00 00 10
-# 00 00 00 00
-
 def set_flag(f, v):
 	global status
 	if v == 0:
