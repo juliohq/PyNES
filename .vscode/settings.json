@@ -1,0 +1,5 @@
+{
+	"python.pythonPath": "/home/julio/.pyenv/versions/3.8.9/bin/python",
+	"python.linting.pylintEnabled": true,
+	"python.linting.enabled": true,
+}
