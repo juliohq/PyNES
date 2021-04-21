@@ -30,10 +30,10 @@ def fetch():
 
 def set_flag(f, v):
 	global status
-	if v == 0 or v == False:
-		status &= ~f
-	elif v == 1 or v == True:
+	if v:
 		status |= f
+	else:
+		status &= ~f
 
 def get_flag(f):
 	return int((status & f) == f)
