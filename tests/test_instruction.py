@@ -23,3 +23,11 @@ def show():
 cpu.ADC()
 show()
 reset()
+
+cpu.AND()
+show()
+reset()
+
+cpu.ASL()
+show()
+reset()

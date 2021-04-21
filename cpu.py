@@ -16,7 +16,7 @@ status = 0x00
 
 fetched = 0x00
 
-cpu_ram = []
+cpu_ram: list = []
 
 def write(addr, data):
 	cpu_ram[addr] = data
@@ -30,16 +30,13 @@ def fetch():
 
 def set_flag(f, v):
 	global status
-	if v == 0:
-		status ^= f
-	else:
+	if v == 0 or v == False:
+		status &= ~f
+	elif v == 1 or v == True:
 		status |= f
 
 def get_flag(f):
-	if status & f:
-		return 1
-	else:
-		return 0
+	return int((status & f) == f)
 
 # ADDRESSING MODES
 
@@ -86,8 +83,8 @@ def ADC():
 	global a, fetched
 	v = a + fetched + get_flag(C)
 	
-	set_flag(C, int(v > 255))
-	set_flag(Z, int(v & 0xFF))
+	set_flag(C, v > 255)
+	set_flag(Z, v & 0xFF)
 	set_flag(N, v & 0x80)
 	
 	a = v & 0xFF
@@ -96,8 +93,21 @@ def ADC():
 
 def AND():
 	fetch()
-	v = a & fetched
+	global a, fetched
+	a = a & fetched
 	
+	set_flag(Z, a == 0)
+	set_flag(N, a & 0x80)
+	
+	return 1
+	
+def ASL():
+	fetch()
+	v = fetched << 1
+	set_flag(C, a & 0x80)
+	set_flag(Z, v == 0x00)
+	set_flag(N, (v & 0x80) == 0x80)
+	return 0
 
 def BRK():
 	pass

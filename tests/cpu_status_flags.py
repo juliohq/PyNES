@@ -2,28 +2,44 @@ import test
 from PyNES import cpu
 
 def show():
-	print("C:", cpu.get_flag(cpu.C), "Z:", cpu.get_flag(cpu.Z), "I:", cpu.get_flag(cpu.I), "D:", cpu.get_flag(cpu.D), "B:", cpu.get_flag(cpu.B), "V:", cpu.get_flag(cpu.V), "N:", cpu.get_flag(cpu.N))
+	print("C:", cpu.get_flag(cpu.C))
+	print("Z:", cpu.get_flag(cpu.Z))
+	print("I:", cpu.get_flag(cpu.I))
+	print("D:", cpu.get_flag(cpu.D))
+	print("B:", cpu.get_flag(cpu.B))
+	print("V:", cpu.get_flag(cpu.V))
+	print("N:", cpu.get_flag(cpu.N))
 
 def show_raw():
 	print(cpu.status)
 
 show()
-cpu.set_flag(cpu.C, 1)
+cpu.set_flag(cpu.C, True)
 cpu.set_flag(cpu.Z, 1)
-cpu.set_flag(cpu.I, 1)
+cpu.set_flag(cpu.I, True)
 cpu.set_flag(cpu.D, 1)
-cpu.set_flag(cpu.B, 1)
+cpu.set_flag(cpu.B, True)
 cpu.set_flag(cpu.V, 1)
-cpu.set_flag(cpu.N, 1)
+cpu.set_flag(cpu.N, True)
 show()
 show_raw() # should print 127
 
-cpu.set_flag(cpu.C, 0)
+cpu.set_flag(cpu.C, False)
 cpu.set_flag(cpu.Z, 0)
-cpu.set_flag(cpu.I, 0)
+cpu.set_flag(cpu.I, False)
 cpu.set_flag(cpu.D, 0)
-cpu.set_flag(cpu.B, 0)
+cpu.set_flag(cpu.B, False)
 cpu.set_flag(cpu.V, 0)
-cpu.set_flag(cpu.N, 0)
+cpu.set_flag(cpu.N, False)
 show()
 show_raw() # should print 0
+
+cpu.set_flag(cpu.C, True)
+cpu.set_flag(cpu.Z, 0)
+cpu.set_flag(cpu.I, False)
+cpu.set_flag(cpu.D, 1)
+cpu.set_flag(cpu.B, True)
+cpu.set_flag(cpu.V, 0)
+cpu.set_flag(cpu.N, False)
+show()
+show_raw() # should print 25
