@@ -16,7 +16,13 @@ def show():
 	print("SP:", cpu.sp)
 	print("PC:", cpu.pc)
 	
-	print("C:", cpu.get_flag(cpu.C), "Z:", cpu.get_flag(cpu.Z), "I:", cpu.get_flag(cpu.I), "D:", cpu.get_flag(cpu.D), "B:", cpu.get_flag(cpu.B), "V:", cpu.get_flag(cpu.V), "N:", cpu.get_flag(cpu.N))
+	print("C:", cpu.get_flag(cpu.C))
+	print("Z:", cpu.get_flag(cpu.Z))
+	print("I:", cpu.get_flag(cpu.I))
+	print("D:", cpu.get_flag(cpu.D))
+	print("B:", cpu.get_flag(cpu.B))
+	print("V:", cpu.get_flag(cpu.V))
+	print("N:", cpu.get_flag(cpu.N))
 
 # instructions to test (requires reset after each one)
 
