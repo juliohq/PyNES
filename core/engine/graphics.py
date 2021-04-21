@@ -1,3 +1,6 @@
+# pylint: disable=no-name-in-module
+# pylint: disable=no-member
+
 import pygame
 import sys
 
