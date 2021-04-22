@@ -84,7 +84,7 @@ def ADC():
 	v = a + fetched + get_flag(C)
 	
 	set_flag(C, v > 255)
-	set_flag(Z, v & 0xFF)
+	set_flag(Z, v == 0x00)
 	set_flag(N, v & 0x80)
 	
 	a = v & 0xFF
