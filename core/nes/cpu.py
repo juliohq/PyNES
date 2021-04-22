@@ -18,10 +18,15 @@ fetched = 0x00
 
 cpu_ram: list = []
 
+def is_in_range(addr):
+	return addr >= 0x00 and addr <= 0x800
+
 def write(addr, data):
+	if is_in_range(addr):
 	cpu_ram[addr] = data
 
 def read(addr):
+	if is_in_range(addr):
 	return cpu_ram[addr]
 
 def fetch():
