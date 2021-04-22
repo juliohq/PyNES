@@ -1,6 +1,6 @@
 import unittest
 from core.nes import cpu
-from core.nes.cpu import (C, Z, I, D, B, V, N, get_flag)
+from core.nes.cpu import (C, Z, V, N, get_flag)
 
 class test_adc(unittest.TestCase):
 	def test_adc(self):
@@ -9,9 +9,6 @@ class test_adc(unittest.TestCase):
 		cpu.ADC()
 		
 		self.assertEqual(cpu.a, 9)
-		self.assertEqual(cpu.x, 0)
-		self.assertEqual(cpu.y, 0)
-		self.assertEqual(cpu.sp, 0)
 		self.assertEqual(cpu.pc, 0)
 		
 		self.assertEqual(get_flag(C), 0)
@@ -25,9 +22,6 @@ class test_adc(unittest.TestCase):
 		cpu.ADC()
 		
 		self.assertEqual(cpu.a, 0xFE)
-		self.assertEqual(cpu.x, 0)
-		self.assertEqual(cpu.y, 0)
-		self.assertEqual(cpu.sp, 0)
 		self.assertEqual(cpu.pc, 0)
 		
 		self.assertEqual(get_flag(C), 1)
