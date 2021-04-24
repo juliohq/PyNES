@@ -141,13 +141,12 @@ def BCC():
 	if get_flag(C) == 0:
 		page = pc & 0xFF00
 		addr = read(pc)
-		pc += 1
-		
-		abs_addr = pc + addr + 2
-		if abs_addr == page:
+		pc += addr
+		if (pc & 0xFF00) != page:
 			return 2
 		else:
 			return 1
+	pc += 1
 	return 0
 
 def BRK():
