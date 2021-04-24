@@ -143,27 +143,20 @@ def CLC():
 	set_flag(C, 0)
 	return 0
 
+def CLI():
+	set_flag(I, 0)
+	return 0
+
 def CLV():
 	set_flag(V, 0)
 	return 2
 
-def CLI():
-	set_flag(I, 0)
-	return 0
-
-def SEI():
-	set_flag(I, 1)
-	return 0
-
-def CLI():
-	set_flag(I, 0)
-	return 0
-def SEI():
-	set_flag(I, 1)
-	return 0
-
 def SEC():
 	set_flag(C, 1)
+	return 0
+
+def SEI():
+	set_flag(I, 1)
 	return 0
 
 for i in range(2048):
