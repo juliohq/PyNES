@@ -152,6 +152,9 @@ def SEI():
 	set_flag(I, 1)
 	return 0
 
+def CLI():
+	set_flag(I, 0)
+	return 0
 def SEI():
 	set_flag(I, 1)
 	return 0
