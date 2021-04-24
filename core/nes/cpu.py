@@ -64,6 +64,10 @@ def IMM():
 def IMP():
 	pass
 
+def ACC():
+	global fetched
+	fetched = a
+
 def IND():
 	pass
 
