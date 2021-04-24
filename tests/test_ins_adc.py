@@ -13,7 +13,6 @@ class test_adc(unittest.TestCase):
 		
 		self.assertEqual(cpu.a, 0x18)
 		self.assertEqual(cpu.pc, 0)
-		
 		self.assertEqual(get_flag(C), 0)
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 0)
@@ -28,7 +27,6 @@ class test_adc(unittest.TestCase):
 		
 		self.assertEqual(cpu.a, 0x80)
 		self.assertEqual(cpu.pc, 0)
-		
 		self.assertEqual(get_flag(C), 0)
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 1)
@@ -43,9 +41,45 @@ class test_adc(unittest.TestCase):
 		
 		self.assertEqual(cpu.a, 0)
 		self.assertEqual(cpu.pc, 0)
-		
 		self.assertEqual(get_flag(C), 1)
 		self.assertEqual(get_flag(Z), 1)
+		self.assertEqual(get_flag(V), 1)
+		self.assertEqual(get_flag(N), 0)
+	
+	def test_mul_adc(self):
+		reset_cpu(cpu)
+		
+		# First
+		cpu.write(0x00, 0x80)
+		cpu.a = 0x80
+		cpu.ADC()
+		
+		self.assertEqual(cpu.a, 0)
+		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(get_flag(C), 1)
+		self.assertEqual(get_flag(Z), 1)
+		self.assertEqual(get_flag(V), 1)
+		self.assertEqual(get_flag(N), 0)
+		
+		# Second
+		cpu.write(0x00, 0x40)
+		cpu.ADC()
+		
+		self.assertEqual(cpu.a, 0x41)
+		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(get_flag(C), 0)
+		self.assertEqual(get_flag(Z), 0)
+		self.assertEqual(get_flag(V), 0)
+		self.assertEqual(get_flag(N), 0)
+		
+		# Third / negative
+		cpu.write(0x00, 0xFF)
+		cpu.ADC()
+		
+		self.assertEqual(cpu.a, 0x40)
+		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(get_flag(C), 1)
+		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 0)
 		self.assertEqual(get_flag(N), 0)
 

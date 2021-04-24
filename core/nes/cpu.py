@@ -1,3 +1,4 @@
+# Status flags
 C = 0x01 # carry
 Z = 0x02 # zero
 I = 0x04 # interrupt disable
@@ -88,9 +89,17 @@ def ADC():
 	global a, fetched
 	v = a + fetched + get_flag(C)
 	
+	sign_a = a & 0x80
+	sign_f = fetched & 0x80
+	
 	set_flag(C, v > 255)
 	set_flag(Z, (v & 0xFF) == 0x00)
-	set_flag(V, (a & 0x40) and (fetched & 0x40))
+	set_flag(V, 0)
+	if sign_a == sign_f:
+		if sign_a == (v & 0x80):
+			set_flag(V, 0)
+		else:
+			set_flag(V, 1)
 	set_flag(N, v & 0x80)
 	
 	a = v & 0xFF
