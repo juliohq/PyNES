@@ -24,11 +24,11 @@ def is_in_range(addr):
 
 def write(addr, data):
 	if is_in_range(addr):
-	cpu_ram[addr] = data
+		cpu_ram[addr] = data
 
 def read(addr):
 	if is_in_range(addr):
-	return cpu_ram[addr]
+		return cpu_ram[addr]
 
 def read_16():
 	global pc
@@ -136,9 +136,21 @@ def ASL():
 def BRK():
 	pass
 
+def CLC():
+	set_flag(C, 0)
+	return 0
+
 def CLV():
 	set_flag(V, 0)
 	return 2
+
+def CLI():
+	set_flag(I, 0)
+	return 0
+
+def SEI():
+	set_flag(I, 1)
+	return 0
 
 def SEC():
 	set_flag(C, 1)
