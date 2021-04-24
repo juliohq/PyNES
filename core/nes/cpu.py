@@ -152,6 +152,10 @@ def SEI():
 	set_flag(I, 1)
 	return 0
 
+def SEI():
+	set_flag(I, 1)
+	return 0
+
 def SEC():
 	set_flag(C, 1)
 	return 0
