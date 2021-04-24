@@ -136,6 +136,20 @@ def ASL():
 	set_flag(N, (v & 0x80) == 0x80)
 	return 0
 
+def BCC():
+	global pc
+	if get_flag(C) == 0:
+		page = pc & 0xFF00
+		addr = read(pc)
+		pc += 1
+		
+		abs_addr = pc + addr + 2
+		if abs_addr == page:
+			return 2
+		else:
+			return 1
+	return 0
+
 def BRK():
 	pass
 
