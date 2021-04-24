@@ -22,14 +22,17 @@ cpu_ram: list = []
 def is_in_range(addr):
 	return addr >= 0x00 and addr <= 0x7FF
 
+# Writes the given data to the given memory address
 def write(addr, data):
 	if is_in_range(addr):
 		cpu_ram[addr] = data
 
+# Reads the content of a given memory address
 def read(addr):
 	if is_in_range(addr):
 		return cpu_ram[addr]
 
+# Reads and returns the next 2 bytes of memory (following little-endian addressing)
 def read_16():
 	global pc
 	if is_in_range(pc) and is_in_range(pc + 1):
