@@ -140,5 +140,9 @@ def CLV():
 	set_flag(V, 0)
 	return 2
 
+def SEC():
+	set_flag(C, 1)
+	return 0
+
 for i in range(2048):
 	cpu_ram.append(0)
