@@ -19,7 +19,7 @@ fetched = 0x00
 cpu_ram: list = []
 
 def is_in_range(addr):
-	return addr >= 0x00 and addr <= 0x800
+	return addr >= 0x00 and addr <= 0x7FF
 
 def write(addr, data):
 	if is_in_range(addr):
@@ -30,7 +30,7 @@ def read(addr):
 	return cpu_ram[addr]
 
 def fetch():
-	global fetched
+	global fetched, pc
 	fetched = read(pc)
 
 def set_flag(f, v):
@@ -89,7 +89,8 @@ def ADC():
 	v = a + fetched + get_flag(C)
 	
 	set_flag(C, v > 255)
-	set_flag(Z, v == 0x00)
+	set_flag(Z, (v & 0xFF) == 0x00)
+	set_flag(V, (a & 0x40) and (fetched & 0x40))
 	set_flag(N, v & 0x80)
 	
 	a = v & 0xFF
