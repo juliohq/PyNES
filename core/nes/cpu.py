@@ -151,6 +151,11 @@ def CLV():
 	set_flag(V, 0)
 	return 2
 
+def JMP():
+	fetch()
+	global pc, fetched
+	pc = fetched
+
 def SEC():
 	set_flag(C, 1)
 	return 0
