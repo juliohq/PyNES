@@ -30,6 +30,15 @@ def read(addr):
 	if is_in_range(addr):
 	return cpu_ram[addr]
 
+def read_16():
+	global pc
+	if is_in_range(pc) and is_in_range(pc + 1):
+		lo = read(pc)
+		pc += 1
+		hi = read(pc)
+		pc += 1
+		return (hi << 8) + lo
+
 def fetch():
 	global fetched, pc
 	fetched = read(pc)
