@@ -117,5 +117,9 @@ def ASL():
 def BRK():
 	pass
 
+def CLV():
+	set_flag(V, 0)
+	return 2
+
 for i in range(2048):
 	cpu_ram.append(0)
