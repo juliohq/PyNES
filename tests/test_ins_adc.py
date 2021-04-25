@@ -7,12 +7,19 @@ class test_adc(unittest.TestCase):
 	def test_simple(self):
 		reset_cpu(cpu)
 		
-		cpu.write(0x00, 0x11)
+		# Write code to RAM
+		cpu.write(0x00, 0x69)
+		cpu.write(0x01, 0x11)
+		
 		cpu.a = 0x07
-		cpu.ADC()
+		
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
 		
 		self.assertEqual(cpu.a, 0x18)
-		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(get_flag(C), 0)
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 0)
@@ -21,12 +28,19 @@ class test_adc(unittest.TestCase):
 	def test_overflow(self):
 		reset_cpu(cpu)
 		
-		cpu.write(0x00, 0x40)
+		# Write code to RAM
+		cpu.write(0x00, 0x69)
+		cpu.write(0x01, 0x40)
+		
 		cpu.a = 0x40
-		cpu.ADC()
+		
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
 		
 		self.assertEqual(cpu.a, 0x80)
-		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(get_flag(C), 0)
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 1)
@@ -35,12 +49,15 @@ class test_adc(unittest.TestCase):
 	def test_carry(self):
 		reset_cpu(cpu)
 		
-		cpu.write(0x00, 0x80)
+		# Write code to RAM
+		cpu.write(0x00, 0x69)
+		cpu.write(0x01, 0x80)
+		
 		cpu.a = 0x80
-		cpu.ADC()
+		cpu.clock()
 		
 		self.assertEqual(cpu.a, 0)
-		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(get_flag(C), 1)
 		self.assertEqual(get_flag(Z), 1)
 		self.assertEqual(get_flag(V), 1)
@@ -49,35 +66,49 @@ class test_adc(unittest.TestCase):
 	def test_mul_adc(self):
 		reset_cpu(cpu)
 		
-		# First
-		cpu.write(0x00, 0x80)
-		cpu.a = 0x80
-		cpu.ADC()
+		# Write code to RAM
+		cpu.write(0x00, 0x69)
+		cpu.write(0x01, 0x80)
+		cpu.write(0x02, 0x69)
+		cpu.write(0x03, 0x40)
+		cpu.write(0x04, 0x69)
+		cpu.write(0x05, 0xFF)
 		
-		self.assertEqual(cpu.a, 0)
-		self.assertEqual(cpu.pc, 0)
+		# First
+		cpu.a = 0x80
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
+		
+		self.assertEqual(cpu.a, 0x00)
+		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(get_flag(C), 1)
 		self.assertEqual(get_flag(Z), 1)
 		self.assertEqual(get_flag(V), 1)
 		self.assertEqual(get_flag(N), 0)
 		
 		# Second
-		cpu.write(0x00, 0x40)
-		cpu.ADC()
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
 		
 		self.assertEqual(cpu.a, 0x41)
-		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(cpu.pc, 0x04)
 		self.assertEqual(get_flag(C), 0)
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 0)
 		self.assertEqual(get_flag(N), 0)
 		
 		# Third / negative
-		cpu.write(0x00, 0xFF)
-		cpu.ADC()
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
 		
 		self.assertEqual(cpu.a, 0x40)
-		self.assertEqual(cpu.pc, 0)
+		self.assertEqual(cpu.pc, 0x06)
 		self.assertEqual(get_flag(C), 1)
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 0)

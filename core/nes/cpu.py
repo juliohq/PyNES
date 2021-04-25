@@ -66,7 +66,6 @@ def IMM():
 	global fetched, pc
 	fetched = read(pc)
 	pc += 1
-	return 0
 
 def IMP():
 	pass
@@ -97,7 +96,9 @@ def IZY():
 	pass
 
 def ZP0():
-	pass
+	global fetched, pc
+	fetched = read(read(pc))
+	pc += 1
 
 def ZPX():
 	pass
@@ -360,12 +361,12 @@ def clock():
 		print(ins[0]) # Print instruction mnemonic
 		
 		# Run addressing mode
-		add_cycles1 = ins[2]()
+		ins[2]()
 		
 		# Run instruction
-		add_cycles2 = ins[1]()
+		add_cycles = ins[1]()
 		
 		# Add additional cycles
-		cycles += add_cycles1 + add_cycles2
+		cycles += add_cycles
 	else:
 		cycles -= 1
