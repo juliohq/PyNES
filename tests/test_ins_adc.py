@@ -82,6 +82,45 @@ class test_adc(unittest.TestCase):
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(V), 0)
 		self.assertEqual(get_flag(N), 0)
+	
+	def test_code(self):
+		reset_cpu(cpu)
+		
+		# Write code to RAM (three ADC [IMM])
+		cpu.write(0x00, 0x69)
+		cpu.write(0x01, 0x10)
+		cpu.write(0x02, 0x69)
+		cpu.write(0x03, 0x10)
+		cpu.write(0x04, 0x69)
+		cpu.write(0x05, 0xE0)
+		
+		# First
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
+		
+		self.assertEqual(cpu.a, 0x10)
+		self.assertEqual(cpu.pc, 0x02)
+		
+		# Second
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
+		
+		self.assertEqual(cpu.a, 0x20)
+		self.assertEqual(cpu.pc, 0x04)
+		
+		# Third
+		cpu.clock()
+		
+		while cpu.cycles > 0:
+			cpu.clock()
+		
+		self.assertEqual(cpu.a, 0x00)
+		self.assertEqual(get_flag(C), 1)
+		self.assertEqual(cpu.pc, 0x06)
 
 if __name__ == "__main__":
 	unittest.main()

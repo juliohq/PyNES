@@ -15,7 +15,11 @@ sp = 0x00
 pc = 0x0000
 status = 0x00
 
+# Helpers
+op = 0x00
 fetched = 0x00
+
+cycles = 0
 
 cpu_ram: list = []
 
@@ -62,6 +66,7 @@ def IMM():
 	global fetched, pc
 	fetched = read(pc)
 	pc += 1
+	return 0
 
 def IMP():
 	pass
@@ -103,7 +108,6 @@ def ZPY():
 # INSTRUCTION
 
 def ADC():
-	fetch()
 	global a, fetched
 	v = a + fetched + get_flag(C)
 	
@@ -325,7 +329,7 @@ for i in range(2048):
 	cpu_ram.append(0)
 
 lookup = [
-	["BRK", BRK, IMM, 7], ["ORA", ORA, IZX, 6], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 3], ["ORA", ORA, ZP0, 3], ["ASL", ASL, ZP0, 5], ["???", XXX, IMP, 5], ["PHP", PHP, IMP, 3], ["ORA", ORA, IMM, 2], ["ASL", ASL, IMP, 2], ["???", XXX, IMP, 2], ["???", NOP, IMP, 4], ["ORA", ORA, ABS, 4], ["ASL", ASL, ABS, 6], ["???", XXX, IMP, 6],
+	["BRK", BRK, IMP, 7], ["ORA", ORA, IZX, 6], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 3], ["ORA", ORA, ZP0, 3], ["ASL", ASL, ZP0, 5], ["???", XXX, IMP, 5], ["PHP", PHP, IMP, 3], ["ORA", ORA, IMM, 2], ["ASL", ASL, IMP, 2], ["???", XXX, IMP, 2], ["???", NOP, IMP, 4], ["ORA", ORA, ABS, 4], ["ASL", ASL, ABS, 6], ["???", XXX, IMP, 6],
 	["BPL", BPL, REL, 2], ["ORA", ORA, IZY, 5], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 4], ["ORA", ORA, ZPX, 4], ["ASL", ASL, ZPX, 6], ["???", XXX, IMP, 6], ["CLC", CLC, IMP, 2], ["ORA", ORA, ABY, 4], ["???", NOP, IMP, 2], ["???", XXX, IMP, 7], ["???", NOP, IMP, 4], ["ORA", ORA, ABX, 4], ["ASL", ASL, ABX, 7], ["???", XXX, IMP, 7],
 	["JSR", JSR, ABS, 6], ["AND", AND, IZX, 6], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["BIT", BIT, ZP0, 3], ["AND", AND, ZP0, 3], ["ROL", ROL, ZP0, 5], ["???", XXX, IMP, 5], ["PLP", PLP, IMP, 4], ["AND", AND, IMM, 2], ["ROL", ROL, IMP, 2], ["???", XXX, IMP, 2], ["BIT", BIT, ABS, 4], ["AND", AND, ABS, 4], ["ROL", ROL, ABS, 6], ["???", XXX, IMP, 6],
 	["BMI", BMI, REL, 2], ["AND", AND, IZY, 5], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 4], ["AND", AND, ZPX, 4], ["ROL", ROL, ZPX, 6], ["???", XXX, IMP, 6], ["SEC", SEC, IMP, 2], ["AND", AND, ABY, 4], ["???", NOP, IMP, 2], ["???", XXX, IMP, 7], ["???", NOP, IMP, 4], ["AND", AND, ABX, 4], ["ROL", ROL, ABX, 7], ["???", XXX, IMP, 7],
@@ -342,3 +346,26 @@ lookup = [
 	["CPX", CPX, IMM, 2], ["SBC", SBC, IZX, 6], ["???", NOP, IMP, 2], ["???", XXX, IMP, 8], ["CPX", CPX, ZP0, 3], ["SBC", SBC, ZP0, 3], ["INC", INC, ZP0, 5], ["???", XXX, IMP, 5], ["INX", INX, IMP, 2], ["SBC", SBC, IMM, 2], ["NOP", NOP, IMP, 2], ["???", SBC, IMP, 2], ["CPX", CPX, ABS, 4], ["SBC", SBC, ABS, 4], ["INC", INC, ABS, 6], ["???", XXX, IMP, 6],
 	["BEQ", BEQ, REL, 2], ["SBC", SBC, IZY, 5], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 4], ["SBC", SBC, ZPX, 4], ["INC", INC, ZPX, 6], ["???", XXX, IMP, 6], ["SED", SED, IMP, 2], ["SBC", SBC, ABY, 4], ["NOP", NOP, IMP, 2], ["???", XXX, IMP, 7], ["???", NOP, IMP, 4], ["SBC", SBC, ABX, 4], ["INC", INC, ABX, 7], ["???", XXX, IMP, 7],
 ]
+
+def clock():
+	global op, pc, cycles, lookup
+	if cycles == 0:
+		# Read opcode
+		op = read(pc)
+		pc += 1
+		
+		# Find instruction by opcode, set base cycles
+		ins = lookup[op]
+		cycles = ins[3]
+		print(ins[0]) # Print instruction mnemonic
+		
+		# Run addressing mode
+		add_cycles1 = ins[2]()
+		
+		# Run instruction
+		add_cycles2 = ins[1]()
+		
+		# Add additional cycles
+		cycles += add_cycles1 + add_cycles2
+	else:
+		cycles -= 1
