@@ -152,6 +152,27 @@ class test_adc(unittest.TestCase):
 		self.assertEqual(cpu.a, 0x00)
 		self.assertEqual(get_flag(C), 1)
 		self.assertEqual(cpu.pc, 0x06)
+	
+	def test_zp0(self):
+		reset_cpu(cpu)
+		
+		# Write code to RAM
+		cpu.write(0x00, 0x65) # ADC (ZP)
+		cpu.write(0x01, 0x20) # Value that points to 0x20 address
+		cpu.write(0x20, 0x01) # Value at Page 0x00
+		
+		cpu.a = 0x10 # Set initial A value
+		cpu.clock()  # First clock
+		
+		# Wait CPU clock
+		while cpu.cycles > 0:
+			cpu.clock()
+		
+		self.assertEqual(cpu.a, 0x11)
+		self.assertEqual(cpu.pc, 0x02)
+		self.assertEqual(get_flag(C), 0)
+		self.assertEqual(get_flag(Z), 0)
+		self.assertEqual(get_flag(N), 0)
 
 if __name__ == "__main__":
 	unittest.main()
