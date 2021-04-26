@@ -82,7 +82,8 @@ def ABS():
 	fetched = read(read_16()) # No need to increment pc counter as this already does it
 
 def ABX():
-	pass
+	global fetched
+	fetched = read(read_16() + x) # No need to increment pc counter as this already does it
 
 def ABY():
 	pass
