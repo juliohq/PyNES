@@ -103,7 +103,7 @@ def ZP0():
 
 def ZPX():
 	global fetched, pc, x
-	fetched = read(read(pc) + x)
+	fetched = read((read(pc) + x) & 0xFF)
 	pc += 1
 
 def ZPY():
