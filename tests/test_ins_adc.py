@@ -205,6 +205,8 @@ class test_adc(unittest.TestCase):
 	
 	def test_zpx(self):
 		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
 		
 		# Write code to RAM
 		cpu.write(0x00, 0x75) # ADC (Zero Page X)
@@ -224,6 +226,33 @@ class test_adc(unittest.TestCase):
 		
 		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(cpu.x, 0x0F)
+		self.assertEqual(cpu.a, 0x20)
+		self.assertEqual(get_flag(C), 0)
+		self.assertEqual(get_flag(Z), 0)
+		self.assertEqual(get_flag(N), 0)
+	
+	def test_abs(self):
+		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
+		
+		# Write code to RAM
+		cpu.write(0x00, 0x6D)
+		cpu.write(0x01, 0xFF)
+		cpu.write(0x02, 0x10)
+		cpu.write(0x10FF, 0x10)
+		
+		cpu.a = 0x10
+		cpu.clock()
+		
+		# Make sure cycle count is correct
+		self.assertEqual(cpu.cycles, 4)
+		
+		# Wait CPU clock
+		while cpu.cycles > 0:
+			cpu.clock()
+		
+		self.assertEqual(cpu.pc, 0x03)
 		self.assertEqual(cpu.a, 0x20)
 		self.assertEqual(get_flag(C), 0)
 		self.assertEqual(get_flag(Z), 0)

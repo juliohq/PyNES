@@ -25,7 +25,7 @@ clock_count = 0
 cpu_ram: list = []
 
 def is_in_range(addr):
-	return addr >= 0x00 and addr <= 0x7FF
+	return addr >= 0x00 and addr <= 0xFFFF
 
 # Writes the given data to the given memory address
 def write(addr, data):
@@ -40,12 +40,11 @@ def read(addr):
 # Reads and returns the next 2 bytes of memory (following little-endian addressing)
 def read_16():
 	global pc
-	if is_in_range(pc) and is_in_range(pc + 1):
-		lo = read(pc)
-		pc += 1
-		hi = read(pc)
-		pc += 1
-		return (hi << 8) + lo
+	lo = read(pc)
+	pc += 1
+	hi = read(pc)
+	pc += 1
+	return (hi << 8) + lo
 
 def fetch():
 	global fetched, pc
@@ -79,7 +78,8 @@ def IND():
 	pass
 
 def ABS():
-	pass
+	global fetched
+	fetched = read(read_16()) # No need to increment pc counter as this already does it
 
 def ABX():
 	pass
@@ -329,7 +329,8 @@ def TYA():
 def XXX():
 	pass
 
-for i in range(2048):
+# Fill CPU with 16-bit addressable memory
+for i in range(0xFFFF):
 	cpu_ram.append(0)
 
 lookup = [
