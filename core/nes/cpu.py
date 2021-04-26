@@ -20,6 +20,7 @@ op = 0x00
 fetched = 0x00
 
 cycles = 0
+clock_count = 0
 
 cpu_ram: list = []
 
@@ -101,7 +102,9 @@ def ZP0():
 	pc += 1
 
 def ZPX():
-	pass
+	global fetched, pc, x
+	fetched = read(read(pc) + x)
+	pc += 1
 
 def ZPY():
 	pass
@@ -349,18 +352,16 @@ lookup = [
 ]
 
 def clock():
-	global op, pc, cycles, lookup
+	global op, pc, cycles, lookup, clock_count
 	if cycles == 0:
-		# Read opcode
-		op = read(pc)
-		pc += 1
+		op = read(pc) # Read opcode
+		pc += 1 # Increment program counter in order to read argument bytes
 		
-		# Find instruction by opcode, set base cycles
-		ins = lookup[op]
-		cycles = ins[3]
+		ins = lookup[op] # Find instruction by opcode
+		cycles = ins[3] # Get base cycles
 		print(ins[0]) # Print instruction mnemonic
 		
-		# Run addressing mode
+		# Run addressing mode to fetch data
 		ins[2]()
 		
 		# Run instruction
@@ -368,5 +369,5 @@ def clock():
 		
 		# Add additional cycles
 		cycles += add_cycles
-	else:
-		cycles -= 1
+	cycles -= 1
+	clock_count += 1

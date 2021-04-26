@@ -6,6 +6,8 @@ from tests.utils import reset_cpu
 class test_adc(unittest.TestCase):
 	def test_simple(self):
 		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
 		
 		# Write code to RAM
 		cpu.write(0x00, 0x69)
@@ -15,6 +17,7 @@ class test_adc(unittest.TestCase):
 		
 		cpu.clock()
 		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -27,6 +30,8 @@ class test_adc(unittest.TestCase):
 	
 	def test_overflow(self):
 		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
 		
 		# Write code to RAM
 		cpu.write(0x00, 0x69)
@@ -36,6 +41,7 @@ class test_adc(unittest.TestCase):
 		
 		cpu.clock()
 		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -48,6 +54,8 @@ class test_adc(unittest.TestCase):
 	
 	def test_carry(self):
 		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
 		
 		# Write code to RAM
 		cpu.write(0x00, 0x69)
@@ -55,6 +63,10 @@ class test_adc(unittest.TestCase):
 		
 		cpu.a = 0x80
 		cpu.clock()
+		
+		# Wait CPU clock
+		while cpu.cycles > 0:
+			cpu.clock()
 		
 		self.assertEqual(cpu.a, 0)
 		self.assertEqual(cpu.pc, 0x02)
@@ -65,6 +77,8 @@ class test_adc(unittest.TestCase):
 	
 	def test_mul_adc(self):
 		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
 		
 		# Write code to RAM
 		cpu.write(0x00, 0x69)
@@ -78,6 +92,7 @@ class test_adc(unittest.TestCase):
 		cpu.a = 0x80
 		cpu.clock()
 		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -91,6 +106,7 @@ class test_adc(unittest.TestCase):
 		# Second
 		cpu.clock()
 		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -104,6 +120,7 @@ class test_adc(unittest.TestCase):
 		# Third / negative
 		cpu.clock()
 		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -116,6 +133,8 @@ class test_adc(unittest.TestCase):
 	
 	def test_code(self):
 		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
 		
 		# Write code to RAM (three ADC [IMM])
 		cpu.write(0x00, 0x69)
@@ -128,6 +147,9 @@ class test_adc(unittest.TestCase):
 		# First
 		cpu.clock()
 		
+		self.assertEqual(cpu.cycles, 2)
+		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -137,6 +159,7 @@ class test_adc(unittest.TestCase):
 		# Second
 		cpu.clock()
 		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -146,6 +169,7 @@ class test_adc(unittest.TestCase):
 		# Third
 		cpu.clock()
 		
+		# Wait CPU clock
 		while cpu.cycles > 0:
 			cpu.clock()
 		
@@ -155,14 +179,19 @@ class test_adc(unittest.TestCase):
 	
 	def test_zp0(self):
 		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
 		
 		# Write code to RAM
-		cpu.write(0x00, 0x65) # ADC (ZP)
+		cpu.write(0x00, 0x65) # ADC (Zero Page)
 		cpu.write(0x01, 0x20) # Value that points to 0x20 address
 		cpu.write(0x20, 0x01) # Value at Page 0x00
 		
 		cpu.a = 0x10 # Set initial A value
 		cpu.clock()  # First clock
+		
+		# Make sure cycle count is correct
+		self.assertEqual(cpu.cycles, 3)
 		
 		# Wait CPU clock
 		while cpu.cycles > 0:
@@ -173,6 +202,44 @@ class test_adc(unittest.TestCase):
 		self.assertEqual(get_flag(C), 0)
 		self.assertEqual(get_flag(Z), 0)
 		self.assertEqual(get_flag(N), 0)
+	
+	def test_zpx(self):
+		reset_cpu(cpu)
+		
+		# Write code to RAM
+		cpu.write(0x00, 0x75) # ADC (Zero Page X)
+		cpu.write(0x01, 0x80) # Zero Page X
+		cpu.write(0x8F, 0x10) # Target address
+		
+		cpu.a = 0x10 # Initial A register value
+		cpu.x = 0x0F # Initial X register value
+		cpu.clock()
+		
+		# Make sure cycle count is correct
+		self.assertEqual(cpu.cycles, 4)
+		
+		# Wait CPU clock
+		while cpu.cycles > 0:
+			cpu.clock()
+		
+		self.assertEqual(cpu.pc, 0x02)
+		self.assertEqual(cpu.x, 0x0F)
+		self.assertEqual(cpu.a, 0x20)
+		self.assertEqual(get_flag(C), 0)
+		self.assertEqual(get_flag(Z), 0)
+		self.assertEqual(get_flag(N), 0)
+	
+	def test_abx(self):
+		pass
+	
+	def test_aby(self):
+		pass
+	
+	def test_izx(self):
+		pass
+	
+	def test_izy(self):
+		pass
 
 if __name__ == "__main__":
 	unittest.main()
