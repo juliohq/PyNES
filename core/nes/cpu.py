@@ -94,6 +94,12 @@ def ABX():
 	return 0
 
 def ABY():
+	global fetched, pc
+	bytes = read_16()
+	addr = bytes + y
+	fetched = read(addr)
+	if (addr & 0xFF00) != (bytes & 0xFF00):
+		return 1
 	return 0
 
 def REL():
