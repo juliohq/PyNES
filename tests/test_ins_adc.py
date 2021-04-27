@@ -275,9 +275,9 @@ class test_adc(unittest.TestCase):
 		
 		# Write code to RAM
 		cpu.write(0x00, 0x7D) # ADC (Absolute X)
-		cpu.write(0x01, 0xFE) # Lo (0x10FE)
-		cpu.write(0x02, 0x10) # Hi (0x10FE)
-		cpu.write(0x10FF, 0x10) # Target address
+		cpu.write(0x01, 0x00) # Lo
+		cpu.write(0x02, 0x10) # Hi
+		cpu.write(0x1001, 0x10) # Target address
 		
 		cpu.a = 0x10 # Initial A register value
 		cpu.x = 0x01 # Initial X register value
@@ -285,6 +285,32 @@ class test_adc(unittest.TestCase):
 		
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 4)
+		
+		wait_cpu_clock()
+		
+		self.assertEqual(cpu.pc, 0x03)
+		self.assertEqual(cpu.a, 0x20)
+		self.assertEqual(get_flag(C), 0)
+		self.assertEqual(get_flag(Z), 0)
+		self.assertEqual(get_flag(N), 0)
+		
+		# Cross page
+		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
+		
+		# Write code to RAM
+		cpu.write(0x00, 0x7D) # ADC (Absolute X)
+		cpu.write(0x01, 0xFF) # Lo (0x10FE)
+		cpu.write(0x02, 0x10) # Hi (0x10FE)
+		cpu.write(0x1100, 0x10) # Target address
+		
+		cpu.a = 0x10 # Initial A register value
+		cpu.x = 0x01 # Initial X register value
+		cpu.clock()
+		
+		# Make sure cycle count is correct
+		self.assertEqual(cpu.cycles, 5)
 		
 		wait_cpu_clock()
 		

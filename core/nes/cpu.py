@@ -37,14 +37,14 @@ def read(addr):
 	if is_in_range(addr):
 		return cpu_ram[addr]
 
-# Reads and returns the next 2 bytes of memory (following little-endian addressing)
+# Reads and returns the next 2 bytes of memory (following little-endian addressing) (a 16-bit address)
 def read_16():
 	global pc
 	lo = read(pc)
 	pc += 1
 	hi = read(pc)
 	pc += 1
-	return (hi << 8) + lo
+	return (hi << 8) | lo
 
 def fetch():
 	global fetched, pc
@@ -66,49 +66,62 @@ def IMM():
 	global fetched, pc
 	fetched = read(pc)
 	pc += 1
+	return 0
 
 def IMP():
-	pass
+	return 0
 
 def ACC():
 	global fetched
 	fetched = a
+	return 0
 
 def IND():
-	pass
+	return 0
 
 def ABS():
 	global fetched
 	fetched = read(read_16()) # No need to increment pc counter as this already does it
+	return 0
 
 def ABX():
-	global fetched
-	fetched = read(read_16() + x) # No need to increment pc counter as this already does it
+	global fetched, pc
+	bytes = read_16()
+	addr = bytes + x
+	fetched = read(addr)
+	if (addr & 0xFF00) != (bytes & 0xFF00):
+		return 1
+	return 0
 
 def ABY():
-	pass
+	return 0
 
 def REL():
-	pass
+	return 0
 
 def IZX():
-	pass
+	return 0
 
 def IZY():
-	pass
+	return 0
 
 def ZP0():
 	global fetched, pc
 	fetched = read(read(pc))
 	pc += 1
+	return 0
 
 def ZPX():
 	global fetched, pc, x
 	fetched = read((read(pc) + x) & 0xFF)
 	pc += 1
+	return 0
 
 def ZPY():
-	pass
+	global fetched, pc, y
+	fetched = read((read(pc) + y) & 0xFF)
+	pc += 1
+	return 0
 
 # INSTRUCTION
 
@@ -364,10 +377,10 @@ def clock():
 		print(ins[0]) # Print instruction mnemonic
 		
 		# Run addressing mode to fetch data
-		ins[2]()
+		add_cycles = ins[2]()
 		
 		# Run instruction
-		add_cycles = ins[1]()
+		add_cycles += ins[1]()
 		
 		# Add additional cycles
 		cycles += add_cycles
