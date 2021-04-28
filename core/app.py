@@ -1,5 +1,3 @@
-# pylint: disable=no-member
-
 from core.nes import cartridge, cpu
 from core.engine import graphics
 
