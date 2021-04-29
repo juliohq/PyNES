@@ -86,7 +86,7 @@ def ABS():
 
 def ABX():
 	global fetched, pc
-	bytes = read_16()
+	bytes = read_16() # No need to increment pc counter as this already does it
 	addr = bytes + x
 	fetched = read(addr)
 	if (addr & 0xFF00) != (bytes & 0xFF00):
@@ -95,7 +95,7 @@ def ABX():
 
 def ABY():
 	global fetched, pc
-	bytes = read_16()
+	bytes = read_16() # No need to increment pc counter as this already does it
 	addr = bytes + y
 	fetched = read(addr)
 	if (addr & 0xFF00) != (bytes & 0xFF00):
