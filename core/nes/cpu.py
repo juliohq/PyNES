@@ -113,13 +113,23 @@ def REL():
 	return 0
 
 def IZX():
-	global fetched, pc
+	global fetched, pc, x
 	bytes = read_16_addr((read(pc) + x) & 0xFF)
 	pc += 1
 	fetched = read(bytes)
 	return 0
 
 def IZY():
+	global fetched, pc, y
+	t = read_16_addr(read(pc))
+	hi = read(read(pc) + 1)
+	pc += 1
+	
+	addr_abs = t + y
+	
+	fetched = read(addr_abs)
+	if (addr_abs & 0xFF00) != (hi << 8):
+		return 1
 	return 0
 
 def ZP0():

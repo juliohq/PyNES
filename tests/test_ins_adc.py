@@ -400,7 +400,58 @@ class test_adc(unittest.TestCase):
 		self.assertEqual(get_flag(N), 0)
 	
 	def test_izy(self):
-		pass
+		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
+		
+		# Write code to RAM
+		cpu.write(0x00, 0x71) # ADC (Indirect Y)
+		cpu.write(0x01, 0x10) # Parameter
+		cpu.write(0x10, 0x28) # lo
+		cpu.write(0x11, 0x10) # hi
+		cpu.write(0x1038, 0x10) # Target address
+		
+		cpu.a = 0x10 # Initial A register value
+		cpu.y = 0x10 # Initial Y register value
+		cpu.clock()
+		
+		# Make sure cycle count is correct
+		self.assertEqual(cpu.cycles, 5)
+		
+		wait_cpu_clock()
+		
+		self.assertEqual(cpu.pc, 0x02)
+		self.assertEqual(cpu.a, 0x20)
+		self.assertEqual(get_flag(C), 0)
+		self.assertEqual(get_flag(Z), 0)
+		self.assertEqual(get_flag(N), 0)
+
+		# Cross page
+		reset_cpu(cpu)
+		# Make sure there is no left cycles
+		self.assertEqual(cpu.cycles, 0)
+		
+		# Write code to RAM
+		cpu.write(0x00, 0x71) # ADC (Indirect Y)
+		cpu.write(0x01, 0x10) # Parameter
+		cpu.write(0x10, 0xFF) # lo
+		cpu.write(0x11, 0x10) # hi
+		cpu.write(0x110F, 0x10) # Target address
+		
+		cpu.a = 0x10 # Initial A register value
+		cpu.y = 0x10 # Initial Y register value
+		cpu.clock()
+		
+		# Make sure cycle count is correct
+		self.assertEqual(cpu.cycles, 6)
+		
+		wait_cpu_clock()
+		
+		self.assertEqual(cpu.pc, 0x02)
+		self.assertEqual(cpu.a, 0x20)
+		self.assertEqual(get_flag(C), 0)
+		self.assertEqual(get_flag(Z), 0)
+		self.assertEqual(get_flag(N), 0)
 
 if __name__ == "__main__":
 	unittest.main()
