@@ -46,6 +46,13 @@ def read_16():
 	pc += 1
 	return (hi << 8) | lo
 
+# Reads and returns 2 bytes from the given (following little-endian addressing) (a 16-bit address)
+# It doesn't affect program counter register
+def read_16_addr(addr):
+	lo = read(addr)
+	hi = read(addr + 1)
+	return (hi << 8) | lo
+
 def fetch():
 	global fetched, pc
 	fetched = read(pc)
@@ -106,6 +113,10 @@ def REL():
 	return 0
 
 def IZX():
+	global fetched, pc
+	bytes = read_16_addr((read(pc) + x) & 0xFF)
+	pc += 1
+	fetched = read(bytes)
 	return 0
 
 def IZY():
