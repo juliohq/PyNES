@@ -242,7 +242,7 @@ def CLI():
 
 def CLV():
 	set_flag(V, 0)
-	return 2
+	return 1
 
 def CMP():
 	pass
