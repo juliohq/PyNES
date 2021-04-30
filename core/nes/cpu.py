@@ -22,7 +22,7 @@ fetched = 0x00
 cycles = 0
 clock_count = 0
 
-cpu_ram: list = []
+cpu_ram = []
 
 def is_in_range(addr):
 	return addr >= 0x00 and addr <= 0xFFFF
@@ -179,11 +179,15 @@ def AND():
 	return 1
 
 def ASL():
+	global fetched, a
 	v = fetched << 1
 	set_flag(C, a & 0x80)
 	set_flag(Z, v == 0x00)
-	set_flag(N, (v & 0x80) == 0x80)
-	return 0
+	set_flag(N, v & 0x80)
+	if lookup[op][2] == ACC:
+		a = v & 0xFF
+		return 1
+	return 3
 
 def BCC():
 	global pc
@@ -368,7 +372,7 @@ for i in range(0xFFFF):
 	cpu_ram.append(0)
 
 lookup = [
-	["BRK", BRK, IMP, 7], ["ORA", ORA, IZX, 6], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 3], ["ORA", ORA, ZP0, 3], ["ASL", ASL, ZP0, 5], ["???", XXX, IMP, 5], ["PHP", PHP, IMP, 3], ["ORA", ORA, IMM, 2], ["ASL", ASL, IMP, 2], ["???", XXX, IMP, 2], ["???", NOP, IMP, 4], ["ORA", ORA, ABS, 4], ["ASL", ASL, ABS, 6], ["???", XXX, IMP, 6],
+	["BRK", BRK, IMP, 7], ["ORA", ORA, IZX, 6], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 3], ["ORA", ORA, ZP0, 3], ["ASL", ASL, ZP0, 5], ["???", XXX, IMP, 5], ["PHP", PHP, IMP, 3], ["ORA", ORA, IMM, 2], ["ASL", ASL, ACC, 2], ["???", XXX, IMP, 2], ["???", NOP, IMP, 4], ["ORA", ORA, ABS, 4], ["ASL", ASL, ABS, 6], ["???", XXX, IMP, 6],
 	["BPL", BPL, REL, 2], ["ORA", ORA, IZY, 5], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 4], ["ORA", ORA, ZPX, 4], ["ASL", ASL, ZPX, 6], ["???", XXX, IMP, 6], ["CLC", CLC, IMP, 2], ["ORA", ORA, ABY, 4], ["???", NOP, IMP, 2], ["???", XXX, IMP, 7], ["???", NOP, IMP, 4], ["ORA", ORA, ABX, 4], ["ASL", ASL, ABX, 7], ["???", XXX, IMP, 7],
 	["JSR", JSR, ABS, 6], ["AND", AND, IZX, 6], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["BIT", BIT, ZP0, 3], ["AND", AND, ZP0, 3], ["ROL", ROL, ZP0, 5], ["???", XXX, IMP, 5], ["PLP", PLP, IMP, 4], ["AND", AND, IMM, 2], ["ROL", ROL, IMP, 2], ["???", XXX, IMP, 2], ["BIT", BIT, ABS, 4], ["AND", AND, ABS, 4], ["ROL", ROL, ABS, 6], ["???", XXX, IMP, 6],
 	["BMI", BMI, REL, 2], ["AND", AND, IZY, 5], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 4], ["AND", AND, ZPX, 4], ["ROL", ROL, ZPX, 6], ["???", XXX, IMP, 6], ["SEC", SEC, IMP, 2], ["AND", AND, ABY, 4], ["???", NOP, IMP, 2], ["???", XXX, IMP, 7], ["???", NOP, IMP, 4], ["AND", AND, ABX, 4], ["ROL", ROL, ABX, 7], ["???", XXX, IMP, 7],
