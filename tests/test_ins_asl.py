@@ -16,7 +16,7 @@ class test_ins_asl(unittest.TestCase):
 		cpu.clock()
 		
 		# Make sure cycle count is correct
-		self.assertEqual(cpu.cycles, 2)
+		self.assertEqual(cpu.cycles, 1) # 2 cycles
 		
 		# Wait CPU clock
 		wait_cpu_clock(cpu)

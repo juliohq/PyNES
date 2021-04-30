@@ -167,7 +167,7 @@ def ADC():
 	
 	a = v & 0xFF
 	
-	return 1
+	return 0
 
 def AND():
 	global a, fetched
@@ -176,7 +176,7 @@ def AND():
 	set_flag(Z, a == 0)
 	set_flag(N, a & 0x80)
 	
-	return 1
+	return 0
 
 def ASL():
 	global fetched, a
@@ -186,8 +186,8 @@ def ASL():
 	set_flag(N, v & 0x80)
 	if lookup[op][2] == ACC:
 		a = v & 0xFF
-		return 1
-	return 3
+		return 0
+	return 2
 
 def BCC():
 	global pc
@@ -242,10 +242,15 @@ def CLI():
 
 def CLV():
 	set_flag(V, 0)
-	return 1
+	return 0
 
 def CMP():
-	pass
+	global fetched
+	v = a - fetched
+	set_flag(C, v >= 0x00)
+	set_flag(Z, v == 0x00)
+	set_flag(N, v & 0x80)
+	return 0
 
 def CPX():
 	pass
