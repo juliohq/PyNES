@@ -53,10 +53,6 @@ def read_16_addr(addr):
 	hi = read(addr + 1)
 	return (hi << 8) | lo
 
-def fetch():
-	global fetched, pc
-	fetched = read(pc)
-
 def set_flag(f, v):
 	global status
 	if v:
@@ -174,7 +170,6 @@ def ADC():
 	return 1
 
 def AND():
-	fetch()
 	global a, fetched
 	a = a & fetched
 	
@@ -182,9 +177,8 @@ def AND():
 	set_flag(N, a & 0x80)
 	
 	return 1
-	
+
 def ASL():
-	fetch()
 	v = fetched << 1
 	set_flag(C, a & 0x80)
 	set_flag(Z, v == 0x00)
@@ -277,7 +271,6 @@ def INY():
 	pass
 
 def JMP():
-	fetch()
 	global pc, fetched
 	pc = fetched
 

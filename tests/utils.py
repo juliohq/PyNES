@@ -5,3 +5,7 @@ def reset_cpu(cpu):
 	cpu.sp = 0x00
 	cpu.pc = 0x0000
 	cpu.status = 0x00
+
+def wait_cpu_clock(cpu):
+	while cpu.cycles > 0:
+		cpu.clock()

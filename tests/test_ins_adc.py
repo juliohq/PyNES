@@ -1,11 +1,7 @@
 import unittest
 from core.nes import cpu
 from core.nes.cpu import (C, Z, V, N, get_flag)
-from tests.utils import reset_cpu
-
-def wait_cpu_clock():
-	while cpu.cycles > 0:
-		cpu.clock()
+from tests.utils import reset_cpu, wait_cpu_clock
 
 class test_adc(unittest.TestCase):
 	def test_simple(self):
@@ -21,7 +17,7 @@ class test_adc(unittest.TestCase):
 		
 		cpu.clock()
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0x18)
 		self.assertEqual(cpu.pc, 0x02)
@@ -43,7 +39,7 @@ class test_adc(unittest.TestCase):
 		
 		cpu.clock()
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0x80)
 		self.assertEqual(cpu.pc, 0x02)
@@ -64,7 +60,7 @@ class test_adc(unittest.TestCase):
 		cpu.a = 0x80
 		cpu.clock()
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0)
 		self.assertEqual(cpu.pc, 0x02)
@@ -90,7 +86,7 @@ class test_adc(unittest.TestCase):
 		cpu.a = 0x80
 		cpu.clock()
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0x00)
 		self.assertEqual(cpu.pc, 0x02)
@@ -102,7 +98,7 @@ class test_adc(unittest.TestCase):
 		# Second
 		cpu.clock()
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0x41)
 		self.assertEqual(cpu.pc, 0x04)
@@ -114,7 +110,7 @@ class test_adc(unittest.TestCase):
 		# Third / negative
 		cpu.clock()
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0x40)
 		self.assertEqual(cpu.pc, 0x06)
@@ -141,7 +137,7 @@ class test_adc(unittest.TestCase):
 		
 		self.assertEqual(cpu.cycles, 2)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0x10)
 		self.assertEqual(cpu.pc, 0x02)
@@ -183,7 +179,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 3)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.a, 0x11)
 		self.assertEqual(cpu.pc, 0x02)
@@ -208,7 +204,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 4)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(cpu.x, 0x0F)
@@ -234,7 +230,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 4)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(cpu.x, 0xFF)
@@ -260,7 +256,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 4)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x03)
 		self.assertEqual(cpu.a, 0x20)
@@ -286,7 +282,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 4)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x03)
 		self.assertEqual(cpu.a, 0x20)
@@ -312,7 +308,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 5)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x03)
 		self.assertEqual(cpu.a, 0x20)
@@ -338,7 +334,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 4)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x03)
 		self.assertEqual(cpu.a, 0x20)
@@ -364,7 +360,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 5)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x03)
 		self.assertEqual(cpu.a, 0x20)
@@ -391,7 +387,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 6)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(cpu.a, 0x20)
@@ -418,7 +414,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 5)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(cpu.a, 0x20)
@@ -445,7 +441,7 @@ class test_adc(unittest.TestCase):
 		# Make sure cycle count is correct
 		self.assertEqual(cpu.cycles, 6)
 		
-		wait_cpu_clock()
+		wait_cpu_clock(cpu)
 		
 		self.assertEqual(cpu.pc, 0x02)
 		self.assertEqual(cpu.a, 0x20)
