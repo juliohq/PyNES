@@ -1,6 +1,6 @@
-def batch_write(addr, arr_data, cpu):
-	for i in range(len(arr_data)):
-		cpu.write(addr + i, arr_data[i])
+def batch_write(addr, data, cpu):
+	for i in range(len(data)):
+		cpu.write(addr + i, data[i])
 
 def reset_cpu(cpu):
 	cpu.a = 0x00

@@ -253,7 +253,12 @@ def CMP():
 	return 0
 
 def CPX():
-	pass
+	global fetched
+	v = x - fetched
+	set_flag(C, v >= 0x00)
+	set_flag(Z, v == 0x00)
+	set_flag(N, v & 0x80)
+	return 0
 
 def CPY():
 	pass
