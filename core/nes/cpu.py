@@ -261,7 +261,12 @@ def CPX():
 	return 0
 
 def CPY():
-	pass
+	global fetched
+	v = y - fetched
+	set_flag(C, v >= 0x00)
+	set_flag(Z, v == 0x00)
+	set_flag(N, v & 0x80)
+	return 0
 
 def DEC():
 	pass
