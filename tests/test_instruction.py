@@ -1,4 +1,5 @@
-from nes import cpu
+import unittest
+from core.nes import cpu
 
 def reset():
 	cpu.a = 0x00

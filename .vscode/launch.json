@@ -5,25 +5,11 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Python: Run PyNES",
-			"type": "python",
-			"request": "launch",
-			"module": "core",
-			"console": "integratedTerminal",
-		},
-		{
-			"name": "Python: Run Test",
-			"type": "python",
-			"request": "launch",
-			"module": "core.tests.${fileBasenameNoExtension}",
-			"console": "integratedTerminal",
-		},
-		{
-			"name": "Python: Run File",
+			"name": "Python: Arquivo Atual",
 			"type": "python",
 			"request": "launch",
 			"program": "${file}",
-			"console": "integratedTerminal",
+			"console": "integratedTerminal"
 		}
 	]
 }
