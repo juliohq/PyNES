@@ -13,6 +13,7 @@ class Window:
 		self.black = (0, 0, 0)
 		
 		self.screen = pygame.display.set_mode(self.size)
+		pygame.display.set_caption("PyNES")
 	
 	def update(self):
 		for event in pygame.event.get():
@@ -22,11 +23,3 @@ class Window:
 	def draw(self):
 		self.screen.fill(self.black)
 		pygame.display.flip()
-
-window = Window()
-
-while True:
-	window.draw()
-	window.update()
-
-pygame.quit()

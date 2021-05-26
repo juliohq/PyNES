@@ -1,5 +1,4 @@
 import test
-from PyNES import cpu
 
 def show():
 	print("C:", cpu.get_flag(cpu.C))

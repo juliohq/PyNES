@@ -1,5 +1,4 @@
-import test
-from PyNES import cpu
+from nes import cpu
 
 def reset():
 	cpu.a = 0x00
@@ -30,10 +29,10 @@ cpu.ADC()
 show()
 reset()
 
-cpu.AND()
-show()
-reset()
+# cpu.AND()
+# show()
+# reset()
 
-cpu.ASL()
-show()
-reset()
+# cpu.ASL()
+# show()
+# reset()
