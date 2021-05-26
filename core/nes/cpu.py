@@ -399,16 +399,16 @@ def clock():
 	global op, pc, cycles, lookup, clock_count
 	if cycles == 0:
 		op = read(pc) # Read opcode
-		pc += 1 # Increment program counter in order to read argument bytes
+		pc += 1 # Increment program counter in order to read parameter bytes
 		
 		ins = lookup[op] # Find instruction by opcode
-		cycles = ins[3] # Get base cycles
+		cycles = ins[3] # Take base cycles
 		print(ins[0]) # Print instruction mnemonic
 		
-		# Run addressing mode to fetch data
+		# Run addressing mode, take additional cycles
 		add_cycles = ins[2]()
 		
-		# Run instruction
+		# Run instruction, take additional cycles
 		add_cycles += ins[1]()
 		
 		# Add additional cycles
