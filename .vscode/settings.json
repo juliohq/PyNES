@@ -1,5 +1,5 @@
 {
-	"python.pythonPath": "/home/julio/.pyenv/versions/3.8.9/bin/python",
+	"python.pythonPath": "/home/julio/.pyenv/versions/3.8.10/bin/python",
 	"python.testing.unittestArgs": [
 		"-v",
 		"-s",
