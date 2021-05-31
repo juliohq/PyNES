@@ -1,3 +1,5 @@
+import array
+
 # Status flags
 C = 0x01 # carry
 Z = 0x02 # zero
@@ -22,7 +24,7 @@ fetched = 0x00
 cycles = 0
 clock_count = 0
 
-cpu_ram = []
+cpu_ram = array.array("i", [0] * 65536)
 
 def is_in_range(addr):
 	return addr >= 0x00 and addr <= 0xFFFF
@@ -381,10 +383,6 @@ def TYA():
 
 def XXX():
 	pass
-
-# Fill CPU with 16-bit addressable memory
-for i in range(0xFFFF):
-	cpu_ram.append(0)
 
 lookup = [
 	["BRK", BRK, IMP, 7], ["ORA", ORA, IZX, 6], ["???", XXX, IMP, 2], ["???", XXX, IMP, 8], ["???", NOP, IMP, 3], ["ORA", ORA, ZP0, 3], ["ASL", ASL, ZP0, 5], ["???", XXX, IMP, 5], ["PHP", PHP, IMP, 3], ["ORA", ORA, IMM, 2], ["ASL", ASL, ACC, 2], ["???", XXX, IMP, 2], ["???", NOP, IMP, 4], ["ORA", ORA, ABS, 4], ["ASL", ASL, ABS, 6], ["???", XXX, IMP, 6],
