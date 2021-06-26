@@ -18,8 +18,6 @@ class Window:
 		pygame.display.set_caption("PyNES")
 	
 	def draw(self):
-		# self.screen.fill(self.black)
-		# pygame.display.update()
 		pygame.display.flip()
 
 class Text:

@@ -4,14 +4,13 @@ from .engine import graphics
 from math import floor
 import pygame, sys
 from pygame.locals import *
-from pygame.time import Clock
 
 is_debug = True
 
 paused = False
 
 # pygame.init()
-clock = Clock()
+clock = pygame.time.Clock()
 clocks = 0
 
 def run():
