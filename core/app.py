@@ -27,8 +27,6 @@ def run():
 	
 	# Game loop
 	while True:
-		window.draw()
-		
 		global paused
 		for event in pygame.event.get():
 			if event.type == KEYDOWN:
@@ -36,8 +34,11 @@ def run():
 					paused = not paused
 			elif event.type == QUIT:
 				sys.exit()
+			elif event.type == VIDEORESIZE and paused:
+				window.draw()
 		
 		if not paused:
+			window.draw()
 			
 			if is_debug:
 				fps.string = str(floor(clock.get_fps())) + ' FPS'
