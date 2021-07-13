@@ -221,7 +221,7 @@ def BPL():
 	pass
 
 def BRK():
-	pass
+	return 6
 
 def BVC():
 	pass

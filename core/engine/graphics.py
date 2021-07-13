@@ -1,7 +1,7 @@
 import pygame
 
 pygame.font.init()
-font = pygame.font.SysFont(None, 20)
+font = pygame.font.SysFont(None, 16)
 
 class Window:
 	def __init__(self, size):
@@ -46,23 +46,26 @@ class Counter:
 		trect.topright = self.pos
 		self.surface.blit(textobj, trect)
 
-class DebugScreen:
+class Debug:
 	def __init__(self, screen, cpu=None, renderables=[]):
 		self.screen = screen
 		self.surface = pygame.Surface((256, 240))
 		self.cpu = cpu
-		self.rows = []
+		self.cells = []
 		self.renderables = renderables
 		
-		for y in range(8):
+		for byte in range(8):
 			global font
-			self.rows.append(Text(self.surface, font, '00000000', (0, y * 20)))
+			self.cells.append(Text(self.surface, font, '', (0, byte * font.get_height())))
 	
 	def draw(self):
 		pygame.draw.rect(self.surface, (0, 0, 255), pygame.Rect(0, 0, 256, 240))
 		
-		for row in self.rows:
-			row.draw()
+		idx = 0
+		for cell in self.cells:
+			cell.string = "{0:x}".format(self.cpu.read(idx))
+			cell.draw()
+			idx += 1
 		
 		for item in self.renderables:
 			item.draw()
