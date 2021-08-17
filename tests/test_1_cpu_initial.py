@@ -15,7 +15,7 @@ class test_cpu_initial(unittest.TestCase):
 	
 	def test_ram(self):
 		# RAM size
-		self.assertEqual(len(cpu.cpu_ram), 65535)
+		self.assertEqual(len(cpu.cpu_ram), 65536)
 		
 		# RAM access range
 		# Accessible
