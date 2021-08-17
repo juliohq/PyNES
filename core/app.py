@@ -12,6 +12,10 @@ pygame.init()
 clock = pygame.time.Clock()
 clocks = 0
 
+if '-d' in sys.argv or '--debug' in sys.argv or is_debug:
+	print('DEBUG MODE')
+	is_debug = True
+
 def run():
 	if is_debug:
 		window = graphics.Window((512, 240))
