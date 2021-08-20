@@ -14,10 +14,11 @@ if '-d' in sys.argv or '--debug' in sys.argv or is_debug:
 
 def run():
 	worker = Worker()
-	pool = QThreadPool()
-	pool.start(worker)
 	
 	if is_debug:
+		pool = QThreadPool()
+		pool.start(worker)
+		
 		app = QApplication([])
 		window = QWidget()
 		layout = QVBoxLayout()
@@ -25,3 +26,5 @@ def run():
 		layout.addWidget(QPushButton("Button"))
 		window.show()
 		app.exec()
+	else:
+		worker.run()
