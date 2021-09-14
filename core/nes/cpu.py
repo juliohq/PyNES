@@ -1,5 +1,3 @@
-import array
-
 # Status flags
 C = 0x01 # carry
 Z = 0x02 # zero
@@ -24,7 +22,7 @@ fetched = 0x00
 cycles = 0
 clock_count = 0
 
-cpu_ram = array.array("i", [0] * 65536)
+cpu_ram = [0] * 65536
 
 def is_in_range(addr):
 	return addr >= 0x00 and addr <= 0xFFFF
@@ -411,7 +409,6 @@ def clock():
 		
 		ins = lookup[op] # Find instruction by opcode
 		cycles = ins[3] # Take base cycles
-		print(ins[0]) # Print instruction mnemonic
 		
 		# Run addressing mode, take additional cycles
 		add_cycles = ins[2]()
