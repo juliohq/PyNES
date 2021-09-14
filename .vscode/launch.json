@@ -5,10 +5,10 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Python: Arquivo Atual",
+			"name": "Python: PyNES DEBUG",
 			"type": "python",
 			"request": "launch",
-			"program": "${file}",
+			"program": "run.py",
 			"console": "integratedTerminal"
 		}
 	]
