@@ -1,81 +1,106 @@
-from core.engine import graphics, settings
-from core.nes import cartridge, cpu
-from math import floor
-import pygame, sys
-from pygame.locals import *
+import sys
+from core.engine import settings
+from core.engine.worker import Worker
+from core.engine.interpreter import Interpreter
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt5.QtWidgets import (
+	QMainWindow,
+	QApplication,
+	QLabel,
+	QWidget,
+	QVBoxLayout,
+)
+from core.qt import (
+	qtFlags,
+	qtInterp,
+	qtMemDump,
+	qtRegisters,
+)
 
 is_debug = settings.config.getboolean('main', 'debug')
 
-paused = False
+# core
+thread = QThread()
+worker = Worker()
 
-pygame.init()
-clock = pygame.time.Clock()
-clocks = 0
+interp = None
+if settings.config.getboolean('main', 'interpreter'):
+	interp = Interpreter()
+
+# gui
+class App(QMainWindow):
+	def __init__(self):
+		super().__init__()
+		self.setWindowTitle('PyNES Debugger')
+		self.window = QWidget()
+		self.layout = QVBoxLayout(self.window)
+		self.setCentralWidget(self.window)
+		
+		self.show()
+
+app = QApplication([])
+ex = App()
+
+# create widgets
+engine_clocks = QLabel()
+cpu_clocks = QLabel()
+fps = QLabel()
+instruction = QLabel()
+program_counter = QLabel()
+registers = qtRegisters.Registers()
+flags = qtFlags.Flags()
+code = qtInterp.CustomCode(ex.window)
+dump = qtMemDump.DumpTable(ex.window, worker)
+
+# add widgets to layout
+ex.layout.addWidget(engine_clocks)
+ex.layout.addWidget(cpu_clocks)
+ex.layout.addWidget(fps)
+ex.layout.addWidget(instruction)
+ex.layout.addWidget(registers)
+ex.layout.addWidget(flags)
+ex.layout.addWidget(code)
+ex.layout.addWidget(dump)
 
 if '-d' in sys.argv or '--debug' in sys.argv or is_debug:
 	print('DEBUG MODE')
 	is_debug = True
 
+class interpLine(QObject):
+	interpCode = pyqtSignal(int, list) # addr, instruction bytes
+	
+	def runCode(self):
+		custom_code = code.line.text()
+		if custom_code:
+			machine_code = interp.read(custom_code)
+			self.interpCode.emit(0x0000, machine_code)
+
+interp_line = interpLine()
+interp_line.interpCode.connect(worker.injectCode)
+
+def update(ec, cc, efps, ins, regs, f):
+	engine_clocks.setText(f'Engine Clocks: {ec}')
+	cpu_clocks.setText(f'CPU Clocks: {cc}')
+	fps.setText(f'FPS: {efps}')
+	instruction.setText(f'Current Instruction: {ins}')
+	registers.update(regs)
+	flags.update(f)
+
+def quit():
+	sys.exit()
+
 def run():
 	if is_debug:
-		window = graphics.Window((512, 240))
-		debug = graphics.Debug(window.screen, cpu)
+		# Connect signals
+		if interp:
+			code.run.pressed.connect(interp_line.runCode)
 		
-		fps = graphics.Counter(debug.surface, graphics.font, '', (256, 0))
-		engine_clocks = graphics.Counter(debug.surface, graphics.font, '', (256, 20))
-		cpu_clocks = graphics.Counter(debug.surface, graphics.font, '', (256, 40))
-		registers = graphics.Counter(debug.surface, graphics.font, '', (256, 60))
-		flags = graphics.Counter(debug.surface, graphics.font, '', (256, 80))
-		instruction = graphics.Counter(debug.surface, graphics.font, '', (256, 100))
+		worker.moveToThread(thread)
+		thread.started.connect(worker.run)
+		worker.update.connect(update)
+		worker.quit.connect(quit)
+		thread.start()
 		
-		debug.renderables.extend([fps, engine_clocks, cpu_clocks, registers, flags, instruction])
+		app.exec()
 	else:
-		window = graphics.Window((256, 240))
-	
-	# for x in range(0, 2048, 2):
-	# 	cpu.write(x, 0x69)
-	# 	cpu.write(x + 1, 0x01)
-	
-	# Game loop
-	while True:
-		# cpu.clock()
-		
-		global paused
-		for event in pygame.event.get():
-			if event.type == KEYDOWN:
-				if event.key == K_p:
-					paused = not paused
-				elif event.key == K_ESCAPE:
-					pygame.quit()
-					sys.exit()
-			elif event.type == QUIT:
-				pygame.quit()
-				sys.exit()
-			elif event.type == VIDEORESIZE and paused:
-				window.draw()
-		
-		if not paused:
-			window.draw()
-			
-			if is_debug:
-				fps.string = str(floor(clock.get_fps())) + ' FPS'
-				global clocks
-				engine_clocks.string = str(clocks) + ' clocks'
-				cpu_clocks.string = str(cpu.clock_count) + ' CPU clocks'
-				registers.string = 'PC: %s SP: %s A: %s X: %s Y: %s' % (cpu.pc, cpu.sp, cpu.a, cpu.x, cpu.y)
-				flags.string = 'C %s Z %s I %s D %s B %s V %s N %s' % (
-						cpu.get_flag(cpu.C),
-						cpu.get_flag(cpu.Z),
-						cpu.get_flag(cpu.I),
-						cpu.get_flag(cpu.D),
-						cpu.get_flag(cpu.B),
-						cpu.get_flag(cpu.V),
-						cpu.get_flag(cpu.N),
-					)
-				instruction.string = 'INS %s' % cpu.lookup[cpu.op][0]
-				
-				debug.draw()
-				
-				clocks += 1
-		
-		clock.tick(60)
+		worker.run()
